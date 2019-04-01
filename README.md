@@ -1,9 +1,9 @@
 Description
 =============
 
-This repo contains some code to fit the Von Bertalanffy linked to the publication
+This repo contains some code to fit the Von Bertalanffy growth model developped in the publication
 
-*  Bal G., Rivot E., Prévost E., Piou C. & Baglinière J.-L. (2011). Effect of water temperature and density of salmonid juveniles on growth of young-of-the-year Atlantic salmon Salmo salar L.. Journal of Fish Biology 78, pp 1002-1022. https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2011.02902.x
+*  Bal G., Rivot E., PrÃ©vost E., Piou C. & BagliniÃ¨re J.-L. (2011). Effect of water temperature and density of salmonid juveniles on growth of young-of-the-year Atlantic salmon Salmo salar L.. Journal of Fish Biology 78, pp 1002-1022. https://onlinelibrary.wiley.com/doi/10.1111/j.1095-8649.2011.02902.x
 
 
 Only the full model including both density and temperature as covariates is provided. The files organization is as follows:
