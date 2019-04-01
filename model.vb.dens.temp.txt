@@ -1,0 +1,54 @@
+# this the model structure used in the article for fish from La Roche brook
+
+model{
+  
+  # general model structure ========================================================
+  
+  for(n in 1:n.obs){
+    # likelihood for recapture length
+    l.obs[n, 2] ~ dnorm(mu.l.obs[n], tau.vbgm)
+    # mean
+    mu.l.obs[n] <- l.obs[n, 1] + (l.inf - l.obs[n, 1]) * 
+      (1 - exp(- dates.delta[n] * k.opt * wt.effect[year.obs[n]] * exp(- beta.dens * dens[n])))
+  }
+  
+  # computation temp effect in model so fixed values can be changed with priors =============
+  # temperature assumed identical across stations
+  for(y in 1:n.years){
+    for(d in 1:dates.delta.year[y]) {
+      wt.effect.day[y, d] <- step(wt[y, day.fished.year[y, 1] + d] - t.min) * step(t.max - wt[y, day.fished.year[y, 1] + d]) *
+        (wt[y, day.fished.year[y, 1] + d] - t.min) * (wt[y, day.fished.year[y, 1] + d] - t.max) / 
+        ((wt[y, day.fished.year[y, 1] + d] - t.min) * (wt[y, day.fished.year[y, 1] + d] - t.max) - pow((wt[y, day.fished.year[y, 1] + d] - t.opt), 2))
+    }
+	wt.effect[y] <- mean(wt.effect.day[y, 1:dates.delta.year[y]])
+  }
+  
+  # priors ===================================================================================
+  
+  # l.inf, informative from ancillary data set or expert opinion
+  # respect prior structure paper but could change to dnorm
+  mu.l.inf <- 200
+  cv.l.inf <- 0.05
+  shape.l.inf <- 1 / pow(cv.l.inf, 2)
+  rate.l.inf <- shape.l.inf / mu.l.inf
+  l.inf ~ dgamma(shape.l.inf, rate.l.inf)
+  
+  # k.opt
+  mu.k.opt <- 0.0025
+  cv.k.opt <- 2.5
+  shape.k.opt <- 1 / pow(cv.k.opt, 2)
+  rate.k.opt <- shape.k.opt / mu.k.opt
+  k.opt ~ dgamma(shape.k.opt, rate.k.opt)
+  
+  # beta parameters
+  beta.dens ~ dnorm(0, 1)
+  
+  # tau.vbgm, possible change prior sd ~ dunif(0, 20)
+  mu.tau.vbgm <- .1
+  cv.tau.vbgm <- 10
+  shape.tau.vbgm <- 1 / pow(cv.tau.vbgm, 2)
+  rate.tau.vbgm <- shape.tau.vbgm / mu.tau.vbgm
+  tau.vbgm ~ dgamma(shape.tau.vbgm, rate.tau.vbgm)
+  sd.vbgm <- sqrt(1 / tau.vbgm)
+  
+}
